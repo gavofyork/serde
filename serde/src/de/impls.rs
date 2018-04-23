@@ -167,6 +167,264 @@ impl_deserialize_num!(f64, deserialize_f64, integer, float);
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#[cfg(feature = "128")]
+impl<'de> Deserialize<'de> for u128 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        // If this were outside of the serde crate, it would just use:
+        //
+        //    #[derive(Deserialize)]
+        //    #[serde(field_identifier, rename_all = "lowercase")]
+        enum Field {
+            Big,
+            Little,
+        };
+
+        impl<'de> Deserialize<'de> for Field {
+            fn deserialize<D>(deserializer: D) -> Result<Field, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct FieldVisitor;
+
+                impl<'de> Visitor<'de> for FieldVisitor {
+                    type Value = Field;
+
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str("`big` or `little`")
+                    }
+
+                    fn visit_str<E>(self, value: &str) -> Result<Field, E>
+                    where
+                        E: Error,
+                    {
+                        match value {
+                            "big" => Ok(Field::Big),
+                            "little" => Ok(Field::Little),
+                            _ => Err(Error::unknown_field(value, FIELDS)),
+                        }
+                    }
+
+                    fn visit_bytes<E>(self, value: &[u8]) -> Result<Field, E>
+                    where
+                        E: Error,
+                    {
+                        match value {
+                            b"big" => Ok(Field::Big),
+                            b"little" => Ok(Field::Little),
+                            _ => {
+                                let value = String::from_utf8_lossy(value);
+                                Err(Error::unknown_field(&value, FIELDS))
+                            }
+                        }
+                    }
+                }
+
+                deserializer.deserialize_identifier(FieldVisitor)
+            }
+        }
+
+        struct U128Visitor;
+
+        impl<'de> Visitor<'de> for U128Visitor {
+            type Value = u128;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("struct u128")
+            }
+
+            fn visit_seq<A>(self, mut seq: A) -> Result<u128, A::Error>
+            where
+                A: SeqAccess<'de>,
+            {
+                let big: u64 = match try!(seq.next_element()) {
+                    Some(value) => value,
+                    None => {
+                        return Err(Error::invalid_length(0, &self));
+                    }
+                };
+                let little: u64 = match try!(seq.next_element()) {
+                    Some(value) => value,
+                    None => {
+                        return Err(Error::invalid_length(1, &self));
+                    }
+                };
+                let reconstructed = ((big as u128) << 64) + little as u128;
+                Ok(reconstructed)
+            }
+
+            fn visit_map<A>(self, mut map: A) -> Result<u128, A::Error>
+            where
+                A: MapAccess<'de>,
+            {
+                let mut big: Option<u64> = None;
+                let mut little: Option<u64> = None;
+                while let Some(key) = try!(map.next_key()) {
+                    match key {
+                        Field::Big => {
+                            if big.is_some() {
+                                return Err(<A::Error as Error>::duplicate_field("big"));
+                            }
+                            big = Some(try!(map.next_value()));
+                        }
+                        Field::Little => {
+                            if little.is_some() {
+                                return Err(<A::Error as Error>::duplicate_field("little"));
+                            }
+                            little = Some(try!(map.next_value()));
+                        }
+                    }
+                }
+                let big = match big {
+                    Some(big) => big,
+                    None => return Err(<A::Error as Error>::missing_field("big")),
+                };
+                let little = match little {
+                    Some(little) => little,
+                    None => return Err(<A::Error as Error>::missing_field("little")),
+                };
+                let reconstructed = ((big as u128) << 64) + little as u128;
+                Ok(reconstructed)
+            }
+        }
+
+        const FIELDS: &'static [&'static str] = &["big", "little"];
+        deserializer.deserialize_struct("U128", FIELDS, U128Visitor)
+    }
+}
+
+#[cfg(feature = "128")]
+impl<'de> Deserialize<'de> for i128 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        // If this were outside of the serde crate, it would just use:
+        //
+        //    #[derive(Deserialize)]
+        //    #[serde(field_identifier, rename_all = "lowercase")]
+        enum Field {
+            Big,
+            Little,
+        };
+
+        impl<'de> Deserialize<'de> for Field {
+            fn deserialize<D>(deserializer: D) -> Result<Field, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct FieldVisitor;
+
+                impl<'de> Visitor<'de> for FieldVisitor {
+                    type Value = Field;
+
+                    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                        formatter.write_str("`big` or `little`")
+                    }
+
+                    fn visit_str<E>(self, value: &str) -> Result<Field, E>
+                    where
+                        E: Error,
+                    {
+                        match value {
+                            "big" => Ok(Field::Big),
+                            "little" => Ok(Field::Little),
+                            _ => Err(Error::unknown_field(value, FIELDS)),
+                        }
+                    }
+
+                    fn visit_bytes<E>(self, value: &[u8]) -> Result<Field, E>
+                    where
+                        E: Error,
+                    {
+                        match value {
+                            b"big" => Ok(Field::Big),
+                            b"little" => Ok(Field::Little),
+                            _ => {
+                                let value = String::from_utf8_lossy(value);
+                                Err(Error::unknown_field(&value, FIELDS))
+                            }
+                        }
+                    }
+                }
+
+                deserializer.deserialize_identifier(FieldVisitor)
+            }
+        }
+
+        struct I128Visitor;
+
+        impl<'de> Visitor<'de> for I128Visitor {
+            type Value = i128;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("struct i128")
+            }
+
+            fn visit_seq<A>(self, mut seq: A) -> Result<i128, A::Error>
+            where
+                A: SeqAccess<'de>,
+            {
+                let big: u64 = match try!(seq.next_element()) {
+                    Some(value) => value,
+                    None => {
+                        return Err(Error::invalid_length(0, &self));
+                    }
+                };
+                let little: u64 = match try!(seq.next_element()) {
+                    Some(value) => value,
+                    None => {
+                        return Err(Error::invalid_length(1, &self));
+                    }
+                };
+                let reconstructed = (((big as u128) << 64) + little as u128) as i128;
+                Ok(reconstructed)
+            }
+
+            fn visit_map<A>(self, mut map: A) -> Result<i128, A::Error>
+            where
+                A: MapAccess<'de>,
+            {
+                let mut big: Option<u64> = None;
+                let mut little: Option<u64> = None;
+                while let Some(key) = try!(map.next_key()) {
+                    match key {
+                        Field::Big => {
+                            if big.is_some() {
+                                return Err(<A::Error as Error>::duplicate_field("big"));
+                            }
+                            big = Some(try!(map.next_value()));
+                        }
+                        Field::Little => {
+                            if little.is_some() {
+                                return Err(<A::Error as Error>::duplicate_field("little"));
+                            }
+                            little = Some(try!(map.next_value()));
+                        }
+                    }
+                }
+                let big = match big {
+                    Some(big) => big,
+                    None => return Err(<A::Error as Error>::missing_field("big")),
+                };
+                let little = match little {
+                    Some(little) => little,
+                    None => return Err(<A::Error as Error>::missing_field("little")),
+                };
+                let reconstructed = (((big as u128) << 64) + little as u128) as i128;
+                Ok(reconstructed)
+            }
+        }
+
+        const FIELDS: &'static [&'static str] = &["big", "little"];
+        deserializer.deserialize_struct("I128", FIELDS, I128Visitor)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 struct CharVisitor;
 
 impl<'de> Visitor<'de> for CharVisitor {
