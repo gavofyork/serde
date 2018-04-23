@@ -46,6 +46,47 @@ primitive_impl!(char, serialize_char);
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#[cfg(feature = "128")]
+impl Serialize for i128 {
+    #[inline]
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        use super::SerializeStruct;
+
+        let num = *self as u128;
+        let big: u64 = (num >> 64) as u64;
+        let little: u64 = ((num << 64) >> 64) as u64;
+
+        let mut int128 = serializer.serialize_struct("I128", 2)?;
+        int128.serialize_field("big", &big)?;
+        int128.serialize_field("little", &little)?;
+        int128.end()
+    }
+}
+
+#[cfg(feature = "128")]
+impl Serialize for u128 {
+    #[inline]
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        use super::SerializeStruct;
+
+        let big: u64 = (self >> 64) as u64;
+        let little: u64 = ((self << 64) >> 64) as u64;
+
+        let mut uint128 = serializer.serialize_struct("U128", 2)?;
+        uint128.serialize_field("big", &big)?;
+        uint128.serialize_field("little", &little)?;
+        uint128.end()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 impl Serialize for str {
     #[inline]
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
