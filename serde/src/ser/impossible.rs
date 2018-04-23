@@ -55,6 +55,11 @@ use ser::{self, Serialize, SerializeMap, SerializeSeq, SerializeStruct, Serializ
 /// #         unit unit_struct unit_variant newtype_struct newtype_variant
 /// #         tuple tuple_struct tuple_variant map struct struct_variant
 /// #     }
+/// #
+/// #     #[cfg(feature = "128")]
+/// #     __serialize_unimplemented! {
+/// #          i128 u128
+/// #     }
 /// }
 /// #
 /// # fn main() {}

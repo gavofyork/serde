@@ -217,7 +217,12 @@ macro_rules! impl_serializer {
                 serialize_str &str,
                 serialize_bytes &[u8],
                 serialize_unit_struct &'static str
+            }
 
+            #[cfg(feature = "128")]
+            forward_serialize_methods!{
+                serialize_i128 i128,
+                serialize_u128 u128
             }
 
             fn serialize_unit(self) -> Result<S::Ok, S::Error> {
@@ -491,6 +496,7 @@ macro_rules! impl_deserializer {
         {
             type Error = D::Error;
 
+            #[cfg(not(feature = "128"))]
             forward_deserialize_methods! {
                 $wrapper (
                     deserialize_any,
@@ -516,6 +522,37 @@ macro_rules! impl_deserializer {
                     deserialize_map,
                     deserialize_identifier,
                     deserialize_ignored_any
+                )
+            }
+
+            #[cfg(feature = "128")]
+            forward_deserialize_methods! {
+                $wrapper (
+                    deserialize_any,
+                    deserialize_bool,
+                    deserialize_u8,
+                    deserialize_u16,
+                    deserialize_u32,
+                    deserialize_u64,
+                    deserialize_i8,
+                    deserialize_i16,
+                    deserialize_i32,
+                    deserialize_i64,
+                    deserialize_f32,
+                    deserialize_f64,
+                    deserialize_char,
+                    deserialize_str,
+                    deserialize_string,
+                    deserialize_bytes,
+                    deserialize_byte_buf,
+                    deserialize_option,
+                    deserialize_unit,
+                    deserialize_seq,
+                    deserialize_map,
+                    deserialize_identifier,
+                    deserialize_ignored_any,
+                    deserialize_i128,
+                    deserialize_u128
                 )
             }
 
@@ -623,6 +660,13 @@ macro_rules! impl_deserializer {
             {
                 self.0.visit_i64(v)
             }
+            #[cfg(feature = "128")]
+            fn visit_i128<E>(self, v: i128) -> Result<D::Value, E>
+            where
+                E: Error,
+            {
+                self.0.visit_i128(v)
+            }
             fn visit_u8<E>(self, v: u8) -> Result<D::Value, E>
             where
                 E: Error,
@@ -646,6 +690,13 @@ macro_rules! impl_deserializer {
                 E: Error,
             {
                 self.0.visit_u64(v)
+            }
+            #[cfg(feature = "128")]
+            fn visit_u128<E>(self, v: u128) -> Result<D::Value, E>
+            where
+                E: Error,
+            {
+                self.0.visit_u128(v)
             }
             fn visit_f32<E>(self, v: f32) -> Result<D::Value, E>
             where

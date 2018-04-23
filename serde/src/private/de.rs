@@ -48,6 +48,11 @@ where
             visitor.visit_none()
         }
 
+        #[cfg(feature = "128")]
+        forward_to_deserialize_any! {
+            i128 u128
+        }
+
         forward_to_deserialize_any! {
             bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
             byte_buf unit unit_struct newtype_struct seq tuple tuple_struct map
@@ -244,11 +249,15 @@ mod content {
         U16(u16),
         U32(u32),
         U64(u64),
+        #[cfg(feature = "128")]
+        U128(u128),
 
         I8(i8),
         I16(i16),
         I32(i32),
         I64(i64),
+        #[cfg(feature = "128")]
+        I128(i128),
 
         F32(f32),
         F64(f64),
@@ -277,6 +286,36 @@ mod content {
             }
         }
 
+        #[cfg(feature = "128")]
+        fn unexpected(&self) -> Unexpected {
+            match *self {
+                Content::Bool(b) => Unexpected::Bool(b),
+                Content::U8(n) => Unexpected::Unsigned(n as u128),
+                Content::U16(n) => Unexpected::Unsigned(n as u128),
+                Content::U32(n) => Unexpected::Unsigned(n as u128),
+                Content::U64(n) => Unexpected::Unsigned(n as u128),
+                Content::U128(n) => Unexpected::Unsigned(n),
+                Content::I8(n) => Unexpected::Signed(n as i128),
+                Content::I16(n) => Unexpected::Signed(n as i128),
+                Content::I32(n) => Unexpected::Signed(n as i128),
+                Content::I64(n) => Unexpected::Signed(n as i128),
+                Content::I128(n) => Unexpected::Signed(n),
+                Content::F32(f) => Unexpected::Float(f as f64),
+                Content::F64(f) => Unexpected::Float(f),
+                Content::Char(c) => Unexpected::Char(c),
+                Content::String(ref s) => Unexpected::Str(s),
+                Content::Str(s) => Unexpected::Str(s),
+                Content::ByteBuf(ref b) => Unexpected::Bytes(b),
+                Content::Bytes(b) => Unexpected::Bytes(b),
+                Content::None | Content::Some(_) => Unexpected::Option,
+                Content::Unit => Unexpected::Unit,
+                Content::Newtype(_) => Unexpected::NewtypeStruct,
+                Content::Seq(_) => Unexpected::Seq,
+                Content::Map(_) => Unexpected::Map,
+            }
+        }
+
+        #[cfg(not(feature = "128"))]
         fn unexpected(&self) -> Unexpected {
             match *self {
                 Content::Bool(b) => Unexpected::Bool(b),
@@ -368,6 +407,14 @@ mod content {
             Ok(Content::I64(value))
         }
 
+        #[cfg(feature = "128")]
+        fn visit_i128<F>(self, value: i128) -> Result<Self::Value, F>
+        where
+            F: de::Error,
+        {
+            Ok(Content::I128(value))
+        }
+
         fn visit_u8<F>(self, value: u8) -> Result<Self::Value, F>
         where
             F: de::Error,
@@ -394,6 +441,14 @@ mod content {
             F: de::Error,
         {
             Ok(Content::U64(value))
+        }
+
+        #[cfg(feature = "128")]
+        fn visit_u128<F>(self, value: u128) -> Result<Self::Value, F>
+        where
+            F: de::Error,
+        {
+            Ok(Content::U128(value))
         }
 
         fn visit_f32<F>(self, value: f32) -> Result<Self::Value, F>
@@ -606,6 +661,16 @@ mod content {
                 .map(TagOrContent::Content)
         }
 
+        #[cfg(feature = "128")]
+        fn visit_i128<F>(self, value: i128) -> Result<Self::Value, F>
+        where
+            F: de::Error,
+        {
+            ContentVisitor::new()
+                .visit_i128(value)
+                .map(TagOrContent::Content)
+        }
+
         fn visit_u8<F>(self, value: u8) -> Result<Self::Value, F>
         where
             F: de::Error,
@@ -639,6 +704,16 @@ mod content {
         {
             ContentVisitor::new()
                 .visit_u64(value)
+                .map(TagOrContent::Content)
+        }
+
+        #[cfg(feature = "128")]
+        fn visit_u128<F>(self, value: u128) -> Result<Self::Value, F>
+        where
+            F: de::Error,
+        {
+            ContentVisitor::new()
+                .visit_u128(value)
                 .map(TagOrContent::Content)
         }
 
@@ -1031,10 +1106,14 @@ mod content {
                 Content::U16(v) => visitor.visit_u16(v),
                 Content::U32(v) => visitor.visit_u32(v),
                 Content::U64(v) => visitor.visit_u64(v),
+                #[cfg(feature = "128")]
+                Content::U128(v) => visitor.visit_u128(v),
                 Content::I8(v) => visitor.visit_i8(v),
                 Content::I16(v) => visitor.visit_i16(v),
                 Content::I32(v) => visitor.visit_i32(v),
                 Content::I64(v) => visitor.visit_i64(v),
+                #[cfg(feature = "128")]
+                Content::I128(v) => visitor.visit_i128(v),
                 _ => Err(self.invalid_type(&visitor)),
             }
         }
@@ -1087,10 +1166,14 @@ mod content {
                 Content::U16(v) => visitor.visit_u16(v),
                 Content::U32(v) => visitor.visit_u32(v),
                 Content::U64(v) => visitor.visit_u64(v),
+                #[cfg(feature = "128")]
+                Content::U128(v) => visitor.visit_u128(v),
                 Content::I8(v) => visitor.visit_i8(v),
                 Content::I16(v) => visitor.visit_i16(v),
                 Content::I32(v) => visitor.visit_i32(v),
                 Content::I64(v) => visitor.visit_i64(v),
+                #[cfg(feature = "128")]
+                Content::I128(v) => visitor.visit_i128(v),
                 Content::F32(v) => visitor.visit_f32(v),
                 Content::F64(v) => visitor.visit_f64(v),
                 Content::Char(v) => visitor.visit_char(v),
@@ -1145,6 +1228,14 @@ mod content {
             self.deserialize_integer(visitor)
         }
 
+        #[cfg(feature = "128")]
+        fn deserialize_i128<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+        where
+            V: Visitor<'de>,
+        {
+            self.deserialize_integer(visitor)
+        }
+
         fn deserialize_u8<V>(self, visitor: V) -> Result<V::Value, Self::Error>
         where
             V: Visitor<'de>,
@@ -1167,6 +1258,14 @@ mod content {
         }
 
         fn deserialize_u64<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+        where
+            V: Visitor<'de>,
+        {
+            self.deserialize_integer(visitor)
+        }
+
+        #[cfg(feature = "128")]
+        fn deserialize_u128<V>(self, visitor: V) -> Result<V::Value, Self::Error>
         where
             V: Visitor<'de>,
         {
@@ -1606,6 +1705,11 @@ mod content {
             }
         }
 
+        #[cfg(feature = "128")]
+        forward_to_deserialize_any! {
+            i128 u128
+        }
+
         forward_to_deserialize_any! {
             bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
             byte_buf option unit unit_struct newtype_struct seq tuple
@@ -1704,6 +1808,11 @@ mod content {
             visitor.visit_map(self)
         }
 
+        #[cfg(feature = "128")]
+        forward_to_deserialize_any! {
+            i128 u128
+        }
+
         forward_to_deserialize_any! {
             bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
             byte_buf option unit unit_struct newtype_struct seq tuple
@@ -1735,10 +1844,14 @@ mod content {
                 Content::U16(v) => visitor.visit_u16(v),
                 Content::U32(v) => visitor.visit_u32(v),
                 Content::U64(v) => visitor.visit_u64(v),
+                #[cfg(feature = "128")]
+                Content::U128(v) => visitor.visit_u128(v),
                 Content::I8(v) => visitor.visit_i8(v),
                 Content::I16(v) => visitor.visit_i16(v),
                 Content::I32(v) => visitor.visit_i32(v),
                 Content::I64(v) => visitor.visit_i64(v),
+                #[cfg(feature = "128")]
+                Content::I128(v) => visitor.visit_i128(v),
                 _ => Err(self.invalid_type(&visitor)),
             }
         }
@@ -1797,10 +1910,14 @@ mod content {
                 Content::U16(v) => visitor.visit_u16(v),
                 Content::U32(v) => visitor.visit_u32(v),
                 Content::U64(v) => visitor.visit_u64(v),
+                #[cfg(feature = "128")]
+                Content::U128(v) => visitor.visit_u128(v),
                 Content::I8(v) => visitor.visit_i8(v),
                 Content::I16(v) => visitor.visit_i16(v),
                 Content::I32(v) => visitor.visit_i32(v),
                 Content::I64(v) => visitor.visit_i64(v),
+                #[cfg(feature = "128")]
+                Content::I128(v) => visitor.visit_i128(v),
                 Content::F32(v) => visitor.visit_f32(v),
                 Content::F64(v) => visitor.visit_f64(v),
                 Content::Char(v) => visitor.visit_char(v),
@@ -1857,6 +1974,14 @@ mod content {
             self.deserialize_integer(visitor)
         }
 
+        #[cfg(feature = "128")]
+        fn deserialize_i128<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+        where
+            V: Visitor<'de>,
+        {
+            self.deserialize_integer(visitor)
+        }
+
         fn deserialize_u8<V>(self, visitor: V) -> Result<V::Value, Self::Error>
         where
             V: Visitor<'de>,
@@ -1879,6 +2004,14 @@ mod content {
         }
 
         fn deserialize_u64<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+        where
+            V: Visitor<'de>,
+        {
+            self.deserialize_integer(visitor)
+        }
+
+        #[cfg(feature = "128")]
+        fn deserialize_u128<V>(self, visitor: V) -> Result<V::Value, Self::Error>
         where
             V: Visitor<'de>,
         {
@@ -2287,6 +2420,11 @@ mod content {
             }
         }
 
+        #[cfg(feature = "128")]
+        forward_to_deserialize_any! {
+            i128 u128
+        }
+
         forward_to_deserialize_any! {
             bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
             byte_buf option unit unit_struct newtype_struct seq tuple
@@ -2390,6 +2528,11 @@ mod content {
             bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
             byte_buf option unit unit_struct newtype_struct seq tuple
             tuple_struct map struct enum identifier ignored_any
+        }
+
+        #[cfg(feature = "128")]
+        forward_to_deserialize_any! {
+            i128 u128
         }
     }
 
@@ -2563,6 +2706,11 @@ where
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct enum identifier ignored_any
     }
+
+    #[cfg(feature = "128")]
+    forward_to_deserialize_any! {
+        i128 u128
+    }
 }
 
 pub struct BytesDeserializer<'a, E> {
@@ -2601,6 +2749,11 @@ where
         bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct enum identifier ignored_any
+    }
+
+    #[cfg(feature = "128")]
+    forward_to_deserialize_any! {
+        i128 u128
     }
 }
 
@@ -2702,6 +2855,11 @@ where
         bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
         byte_buf option unit unit_struct seq tuple tuple_struct identifier
         ignored_any
+    }
+
+    #[cfg(feature = "128")]
+    forward_to_deserialize_any! {
+        i128 u128
     }
 }
 

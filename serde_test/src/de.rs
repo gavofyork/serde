@@ -131,6 +131,11 @@ impl<'de, 'a> de::Deserializer<'de> for &'a mut Deserializer<'de> {
         byte_buf unit seq map identifier ignored_any
     }
 
+    #[cfg(feature = "128")]
+    forward_to_deserialize_any! {
+        i128 u128
+    }
+
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Error>
     where
         V: Visitor<'de>,
@@ -142,10 +147,14 @@ impl<'de, 'a> de::Deserializer<'de> for &'a mut Deserializer<'de> {
             Token::I16(v) => visitor.visit_i16(v),
             Token::I32(v) => visitor.visit_i32(v),
             Token::I64(v) => visitor.visit_i64(v),
+            #[cfg(feature = "128")]
+            Token::I128(v) => visitor.visit_i128(v),
             Token::U8(v) => visitor.visit_u8(v),
             Token::U16(v) => visitor.visit_u16(v),
             Token::U32(v) => visitor.visit_u32(v),
             Token::U64(v) => visitor.visit_u64(v),
+            #[cfg(feature = "128")]
+            Token::U128(v) => visitor.visit_u128(v),
             Token::F32(v) => visitor.visit_f32(v),
             Token::F64(v) => visitor.visit_f64(v),
             Token::Char(v) => visitor.visit_char(v),
@@ -657,5 +666,10 @@ impl<'de> de::Deserializer<'de> for BytesDeserializer {
         bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct enum identifier ignored_any
+    }
+
+    #[cfg(feature = "128")]
+    forward_to_deserialize_any! {
+        i128 u128
     }
 }

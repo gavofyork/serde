@@ -17,6 +17,7 @@ travis-ci = { repository = "serde-rs/serde" }
 [features]
 default = []
 deserialize_in_place = []
+128 = []
 
 [lib]
 name = "serde_derive"
@@ -30,3 +31,4 @@ syn = { version = "0.13", features = ["visit"] }
 
 [dev-dependencies]
 serde = { version = "1.0", path = "../serde" }
+

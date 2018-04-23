@@ -11,12 +11,26 @@ keywords = ["serde", "serialization"]
 readme = "README.md"
 include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 
-[dependencies]
+[dev-dependencies]
+
+
+[target.'cfg(feature="128")'.dependencies]
+serde = { version = "1.0.16", path = "../serde", features = ["128"] }
+
+[target.'cfg(not(feature="128"))'.dependencies]
 serde = { version = "1.0.16", path = "../serde" }
 
-[dev-dependencies]
+[target.'cfg(feature="128")'.dev-dependencies]
+serde = { version = "1.0.16", path = "../serde", features = ["128", "rc"] }
+serde_derive = { version = "1.0", path = "../serde_derive", features = ["128"] }
+
+[target.'cfg(not(feature="128"))'.dev-dependencies]
 serde = { version = "1.0.16", path = "../serde", features = ["rc"] }
 serde_derive = { version = "1.0", path = "../serde_derive" }
 
 [badges]
 travis-ci = { repository = "serde-rs/serde" }
+
+[features]
+# Add serde support for the new i128 and u128 types.
+128 = []

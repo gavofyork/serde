@@ -44,11 +44,15 @@ pub trait FromPrimitive: Sized {
     fn from_i16(n: i16) -> Option<Self>;
     fn from_i32(n: i32) -> Option<Self>;
     fn from_i64(n: i64) -> Option<Self>;
+    #[cfg(feature = "128")]
+    fn from_i128(n: i128) -> Option<Self>;
     fn from_usize(n: usize) -> Option<Self>;
     fn from_u8(n: u8) -> Option<Self>;
     fn from_u16(n: u16) -> Option<Self>;
     fn from_u32(n: u32) -> Option<Self>;
     fn from_u64(n: u64) -> Option<Self>;
+    #[cfg(feature = "128")]
+    fn from_u128(n: u128) -> Option<Self>;
 }
 
 macro_rules! impl_from_primitive_for_int {
@@ -75,6 +79,11 @@ macro_rules! impl_from_primitive_for_int {
                 int_to_int!($t, n)
             }
             #[inline]
+            #[cfg(feature = "128")]
+            fn from_i128(n: i128) -> Option<Self> {
+                int_to_int!($t, n)
+            }
+            #[inline]
             fn from_usize(n: usize) -> Option<Self> {
                 uint_to!($t, n)
             }
@@ -92,6 +101,11 @@ macro_rules! impl_from_primitive_for_int {
             }
             #[inline]
             fn from_u64(n: u64) -> Option<Self> {
+                uint_to!($t, n)
+            }
+            #[inline]
+            #[cfg(feature = "128")]
+            fn from_u128(n: u128) -> Option<Self> {
                 uint_to!($t, n)
             }
         }
@@ -121,6 +135,11 @@ macro_rules! impl_from_primitive_for_uint {
             fn from_i64(n: i64) -> Option<Self> {
                 int_to_uint!($t, n)
             }
+            #[cfg(feature = "128")]
+            #[inline]
+            fn from_i128(n: i128) -> Option<Self> {
+                int_to_uint!($t, n)
+            }
             #[inline]
             fn from_usize(n: usize) -> Option<Self> {
                 uint_to!($t, n)
@@ -139,6 +158,11 @@ macro_rules! impl_from_primitive_for_uint {
             }
             #[inline]
             fn from_u64(n: u64) -> Option<Self> {
+                uint_to!($t, n)
+            }
+            #[cfg(feature = "128")]
+            #[inline]
+            fn from_u128(n: u128) -> Option<Self> {
                 uint_to!($t, n)
             }
         }
@@ -168,6 +192,11 @@ macro_rules! impl_from_primitive_for_float {
             fn from_i64(n: i64) -> Option<Self> {
                 Some(n as Self)
             }
+            #[cfg(feature = "128")]
+            #[inline]
+            fn from_i128(n: i128) -> Option<Self> {
+                Some(n as Self)
+            }
             #[inline]
             fn from_usize(n: usize) -> Option<Self> {
                 Some(n as Self)
@@ -188,6 +217,11 @@ macro_rules! impl_from_primitive_for_float {
             fn from_u64(n: u64) -> Option<Self> {
                 Some(n as Self)
             }
+            #[cfg(feature = "128")]
+            #[inline]
+            fn from_u128(n: u128) -> Option<Self> {
+                Some(n as Self)
+            }
         }
     };
 }
@@ -197,10 +231,14 @@ impl_from_primitive_for_int!(i8);
 impl_from_primitive_for_int!(i16);
 impl_from_primitive_for_int!(i32);
 impl_from_primitive_for_int!(i64);
+#[cfg(feature = "128")]
+impl_from_primitive_for_int!(i128);
 impl_from_primitive_for_uint!(usize);
 impl_from_primitive_for_uint!(u8);
 impl_from_primitive_for_uint!(u16);
 impl_from_primitive_for_uint!(u32);
 impl_from_primitive_for_uint!(u64);
+#[cfg(feature = "128")]
+impl_from_primitive_for_uint!(u128);
 impl_from_primitive_for_float!(f32);
 impl_from_primitive_for_float!(f64);

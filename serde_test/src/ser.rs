@@ -119,6 +119,12 @@ impl<'s, 'a> ser::Serializer for &'s mut Serializer<'a> {
         Ok(())
     }
 
+    #[cfg(feature = "128")]
+    fn serialize_i128(self, v: i128) -> Result<(), Error> {
+        assert_next_token!(self, I128(v));
+        Ok(())
+    }
+
     fn serialize_u8(self, v: u8) -> Result<(), Error> {
         assert_next_token!(self, U8(v));
         Ok(())
@@ -136,6 +142,12 @@ impl<'s, 'a> ser::Serializer for &'s mut Serializer<'a> {
 
     fn serialize_u64(self, v: u64) -> Result<(), Error> {
         assert_next_token!(self, U64(v));
+        Ok(())
+    }
+
+    #[cfg(feature = "128")]
+    fn serialize_u128(self, v: u128) -> Result<(), Error> {
+        assert_next_token!(self, U128(v));
         Ok(())
     }
 

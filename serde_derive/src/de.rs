@@ -1969,6 +1969,13 @@ fn deserialize_identifier(
                 Ok(__Field::__other(_serde::private::de::Content::I64(__value)))
             }
 
+            #[cfg(feature = "128")]
+            fn visit_i128<__E>(self, __value: i128) -> Result<Self::Value, __E>
+                where __E: _serde::de::Error
+            {
+                Ok(__Field::__other(_serde::private::de::Content::I128(__value)))
+            }
+
             fn visit_u8<__E>(self, __value: u8) -> Result<Self::Value, __E>
                 where __E: _serde::de::Error
             {
@@ -1991,6 +1998,13 @@ fn deserialize_identifier(
                 where __E: _serde::de::Error
             {
                 Ok(__Field::__other(_serde::private::de::Content::U64(__value)))
+            }
+
+            #[cfg(feature = "128")]
+            fn visit_U128<__E>(self, __value: U128) -> Result<Self::Value, __E>
+                where __E: _serde::de::Error
+            {
+                Ok(__Field::__other(_serde::private::de::Content::U128(__value)))
             }
 
             fn visit_f32<__E>(self, __value: f32) -> Result<Self::Value, __E>

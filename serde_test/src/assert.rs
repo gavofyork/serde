@@ -184,6 +184,7 @@ where
     T: Deserialize<'de> + PartialEq + Debug,
 {
     let mut de = Deserializer::new(tokens);
+    println!{"{:#?}", de};
     let mut deserialized_val = match T::deserialize(&mut de) {
         Ok(v) => {
             assert_eq!(v, *value);

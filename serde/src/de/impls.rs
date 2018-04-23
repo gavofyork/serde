@@ -133,14 +133,44 @@ macro_rules! impl_deserialize_num {
     };
 
     (integer $ty:ident) => {
+        #[cfg(feature = "128")]
+        visit_integer_method!(i8, visit_i8, from_i8, Signed, i128);
+        #[cfg(feature = "128")]
+        visit_integer_method!(i16, visit_i16, from_i16, Signed, i128);
+        #[cfg(feature = "128")]
+        visit_integer_method!(i32, visit_i32, from_i32, Signed, i128);
+        #[cfg(feature = "128")]
+        visit_integer_method!(i64, visit_i64, from_i64, Signed, i128);
+        #[cfg(feature = "128")]
+        visit_integer_method!(i128, visit_i128, from_i128, Signed, i128);
+
+        #[cfg(feature = "128")]
+        visit_integer_method!(u8, visit_u8, from_u8, Unsigned, u128);
+        #[cfg(feature = "128")]
+        visit_integer_method!(u16, visit_u16, from_u16, Unsigned, u128);
+        #[cfg(feature = "128")]
+        visit_integer_method!(u32, visit_u32, from_u32, Unsigned, u128);
+        #[cfg(feature = "128")]
+        visit_integer_method!(u64, visit_u64, from_u64, Unsigned, u128);
+        #[cfg(feature = "128")]
+        visit_integer_method!(u128, visit_u128, from_u128, Unsigned, u128);
+
+        #[cfg(not(feature = "128"))]
         visit_integer_method!(i8, visit_i8, from_i8, Signed, i64);
+        #[cfg(not(feature = "128"))]
         visit_integer_method!(i16, visit_i16, from_i16, Signed, i64);
+        #[cfg(not(feature = "128"))]
         visit_integer_method!(i32, visit_i32, from_i32, Signed, i64);
+        #[cfg(not(feature = "128"))]
         visit_integer_method!(i64, visit_i64, from_i64, Signed, i64);
 
+        #[cfg(not(feature = "128"))]
         visit_integer_method!(u8, visit_u8, from_u8, Unsigned, u64);
+        #[cfg(not(feature = "128"))]
         visit_integer_method!(u16, visit_u16, from_u16, Unsigned, u64);
+        #[cfg(not(feature = "128"))]
         visit_integer_method!(u32, visit_u32, from_u32, Unsigned, u64);
+        #[cfg(not(feature = "128"))]
         visit_integer_method!(u64, visit_u64, from_u64, Unsigned, u64);
     };
 
@@ -154,12 +184,16 @@ impl_deserialize_num!(i8, deserialize_i8, integer);
 impl_deserialize_num!(i16, deserialize_i16, integer);
 impl_deserialize_num!(i32, deserialize_i32, integer);
 impl_deserialize_num!(i64, deserialize_i64, integer);
+#[cfg(feature = "128")]
+impl_deserialize_num!(i128, deserialize_i128, integer);
 impl_deserialize_num!(isize, deserialize_i64, integer);
 
 impl_deserialize_num!(u8, deserialize_u8, integer);
 impl_deserialize_num!(u16, deserialize_u16, integer);
 impl_deserialize_num!(u32, deserialize_u32, integer);
 impl_deserialize_num!(u64, deserialize_u64, integer);
+#[cfg(feature = "128")]
+impl_deserialize_num!(u128, deserialize_u128, integer);
 impl_deserialize_num!(usize, deserialize_u64, integer);
 
 impl_deserialize_num!(f32, deserialize_f32, integer, float);
@@ -1125,6 +1159,15 @@ macro_rules! variant_identifier {
                     where
                         E: Error,
                     {
+                        #[cfg(feature = "128")]
+                        match value {
+                            $(
+                                $index => Ok($name_kind :: $variant),
+                            )*
+                            _ => Err(Error::invalid_value(Unexpected::Unsigned(value as u128), &self),),
+                        }
+
+                        #[cfg(not(feature = "128"))]
                         match value {
                             $(
                                 $index => Ok($name_kind :: $variant),
@@ -1996,13 +2039,24 @@ macro_rules! nonzero_integers {
     };
 }
 
+#[cfg(not(feature = "128"))]
 nonzero_integers! {
     // Not including signed NonZeroI* since they might be removed
     NonZeroU8,
     NonZeroU16,
     NonZeroU32,
     NonZeroU64,
-    // FIXME: https://github.com/serde-rs/serde/issues/1136 NonZeroU128,
+    NonZeroUsize,
+}
+
+#[cfg(feature = "128")]
+nonzero_integers! {
+    // Not including signed NonZeroI* since they might be removed
+    NonZeroU8,
+    NonZeroU16,
+    NonZeroU32,
+    NonZeroU64,
+    NonZeroU128,
     NonZeroUsize,
 }
 
@@ -2045,6 +2099,17 @@ where
                     where
                         E: Error,
                     {
+                        #[cfg(feature = "128")]
+                        match value {
+                            0 => Ok(Field::Ok),
+                            1 => Ok(Field::Err),
+                            _ => Err(Error::invalid_value(
+                                Unexpected::Unsigned(value as u128),
+                                &self,
+                            )),
+                        }
+
+                        #[cfg(not(feature = "128"))]
                         match value {
                             0 => Ok(Field::Ok),
                             1 => Ok(Field::Err),

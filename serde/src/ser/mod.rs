@@ -487,6 +487,29 @@ pub trait Serializer: Sized {
     /// ```
     fn serialize_i64(self, v: i64) -> Result<Self::Ok, Self::Error>;
 
+    /// Serialize an `i128` value.
+    ///
+    /// ```rust
+    /// # #[macro_use]
+    /// # extern crate serde;
+    /// #
+    /// # use serde::Serializer;
+    /// #
+    /// # __private_serialize!();
+    /// #
+    /// impl Serialize for i128 {
+    ///     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    ///         where S: Serializer
+    ///     {
+    ///         serializer.serialize_i128(*self)
+    ///     }
+    /// }
+    /// #
+    /// # fn main() {}
+    /// ```
+    #[cfg(feature = "128")]
+    fn serialize_i128(self, v: i128) -> Result<Self::Ok, Self::Error>;
+
     /// Serialize a `u8` value.
     ///
     /// If the format does not differentiate between `u8` and `u64`, a
@@ -586,6 +609,29 @@ pub trait Serializer: Sized {
     /// # fn main() {}
     /// ```
     fn serialize_u64(self, v: u64) -> Result<Self::Ok, Self::Error>;
+
+    /// Serialize a `u128` value.
+    ///
+    /// ```rust
+    /// # #[macro_use]
+    /// # extern crate serde;
+    /// #
+    /// # use serde::Serializer;
+    /// #
+    /// # __private_serialize!();
+    /// #
+    /// impl Serialize for u128 {
+    ///     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    ///         where S: Serializer
+    ///     {
+    ///         serializer.serialize_u128(*self)
+    ///     }
+    /// }
+    /// #
+    /// # fn main() {}
+    /// ```
+    #[cfg(feature = "128")]
+    fn serialize_u128(self, v: u128) -> Result<Self::Ok, Self::Error>;
 
     /// Serialize an `f32` value.
     ///
@@ -715,6 +761,10 @@ pub trait Serializer: Sized {
     /// #         bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str none some
     /// #         unit unit_struct unit_variant newtype_struct newtype_variant
     /// #         seq tuple tuple_struct tuple_variant map struct struct_variant
+    /// #     }
+    /// #
+    /// #     __serialize_unimplemented! {
+    /// #         i128 u128
     /// #     }
     /// # }
     /// #
