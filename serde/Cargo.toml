@@ -66,3 +66,6 @@ rc = []
 #
 #    http://play.integer32.com/
 playground = ["serde_derive"]
+
+# Allow the serialization and deserialization of u128 and i128.
+128 = []
