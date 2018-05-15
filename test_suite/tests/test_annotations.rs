@@ -933,7 +933,7 @@ where
     let n = i8::deserialize(deserializer)?;
     match n {
         0 => Ok(()),
-        _ => Err(de::Error::invalid_value(Unexpected::Signed(n as i64), &"0")),
+        _ => Err(de::Error::invalid_value(Unexpected::Signed(n as i128), &"0")),
     }
 }
 
@@ -1534,7 +1534,7 @@ fn test_complex_flatten() {
         b: bool,
         c: Vec<String>,
         d: String,
-        e: Option<u64>,
+        e: Option<u128>,
     }
 
     #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -1573,7 +1573,7 @@ fn test_complex_flatten() {
             Token::Str("d"),
             Token::Str("c"),
             Token::Str("e"),
-            Token::U64(2),
+            Token::U128(2),
             Token::Str("f"),
             Token::U32(3),
             Token::Str("z"),
@@ -1614,7 +1614,7 @@ fn test_complex_flatten() {
             Token::Str("c"),
             Token::Str("e"),
             Token::Some,
-            Token::U64(2),
+            Token::U128(2),
             Token::Str("f"),
             Token::U32(3),
             Token::Str("z"),

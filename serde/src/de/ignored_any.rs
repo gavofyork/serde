@@ -120,13 +120,13 @@ impl<'de> Visitor<'de> for IgnoredAny {
     }
 
     #[inline]
-    fn visit_i64<E>(self, x: i64) -> Result<Self::Value, E> {
+    fn visit_i128<E>(self, x: i128) -> Result<Self::Value, E> {
         let _ = x;
         Ok(IgnoredAny)
     }
 
     #[inline]
-    fn visit_u64<E>(self, x: u64) -> Result<Self::Value, E> {
+    fn visit_u128<E>(self, x: u128) -> Result<Self::Value, E> {
         let _ = x;
         Ok(IgnoredAny)
     }

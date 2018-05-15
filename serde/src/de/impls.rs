@@ -157,14 +157,14 @@ impl_deserialize_num!(i16, deserialize_i16, integer);
 impl_deserialize_num!(i32, deserialize_i32, integer);
 impl_deserialize_num!(i64, deserialize_i64, integer);
 impl_deserialize_num!(i128, deserialize_i128, integer);
-impl_deserialize_num!(isize, deserialize_i64, integer);
+impl_deserialize_num!(isize, deserialize_i128, integer);
 
 impl_deserialize_num!(u8, deserialize_u8, integer);
 impl_deserialize_num!(u16, deserialize_u16, integer);
 impl_deserialize_num!(u32, deserialize_u32, integer);
 impl_deserialize_num!(u64, deserialize_u64, integer);
 impl_deserialize_num!(u128, deserialize_u128, integer);
-impl_deserialize_num!(usize, deserialize_u64, integer);
+impl_deserialize_num!(usize, deserialize_u128, integer);
 
 impl_deserialize_num!(f32, deserialize_f32, integer, float);
 impl_deserialize_num!(f64, deserialize_f64, integer, float);
