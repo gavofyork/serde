@@ -243,7 +243,7 @@ fn serialize_tuple_struct(
 }
 
 fn serialize_struct(params: &Parameters, fields: &[Field], cattrs: &attr::Container) -> Fragment {
-    assert!(fields.len() as u64 <= u64::from(u32::MAX));
+    assert!(fields.len() as u128 <= u128::from(u32::MAX));
 
     if cattrs.has_flatten() {
         serialize_struct_as_map(params, fields, cattrs)
@@ -326,7 +326,7 @@ fn serialize_struct_as_map(
 }
 
 fn serialize_enum(params: &Parameters, variants: &[Variant], cattrs: &attr::Container) -> Fragment {
-    assert!(variants.len() as u64 <= u64::from(u32::MAX));
+    assert!(variants.len() as u128 <= u128::from(u32::MAX));
 
     let self_var = &params.self_var;
 
