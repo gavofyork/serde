@@ -24,11 +24,10 @@ name = "serde_derive"
 proc-macro = true
 
 [dependencies]
-proc-macro2 = "0.3"
-quote = "0.5"
+proc-macro2 = { git = "https://github.com/gavofyork/proc-macro2.git" }
+quote = { git = "https://github.com/gavofyork/quote.git" }
 serde_derive_internals = { version = "=0.23.1", default-features = false, path = "../serde_derive_internals" }
 syn = { version = "0.13", features = ["visit"] }
 
 [dev-dependencies]
 serde = { version = "1.0", path = "../serde" }
-
