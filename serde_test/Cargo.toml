@@ -11,20 +11,10 @@ keywords = ["serde", "serialization"]
 readme = "README.md"
 include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 
-[dev-dependencies]
-
-
-[target.'cfg(feature="128")'.dependencies]
-serde = { version = "1.0.16", path = "../serde", features = ["128"] }
-
-[target.'cfg(not(feature="128"))'.dependencies]
+[dependencies]
 serde = { version = "1.0.16", path = "../serde" }
 
-[target.'cfg(feature="128")'.dev-dependencies]
-serde = { version = "1.0.16", path = "../serde", features = ["128", "rc"] }
-serde_derive = { version = "1.0", path = "../serde_derive", features = ["128"] }
-
-[target.'cfg(not(feature="128"))'.dev-dependencies]
+[dev-dependencies]
 serde = { version = "1.0.16", path = "../serde", features = ["rc"] }
 serde_derive = { version = "1.0", path = "../serde_derive" }
 

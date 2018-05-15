@@ -312,22 +312,10 @@ pub enum Unexpected<'a> {
 
     /// The input contained an unsigned integer `u8`, `u16`, `u32` or `u64` that
     /// was not expected.
-    #[cfg(not(feature = "128"))]
-    Unsigned(u64),
-
-    /// The input contained a signed integer `i8`, `i16`, `i32` or `i64` that
-    /// was not expected.
-    #[cfg(not(feature = "128"))]
-    Signed(i64),
-
-    /// The input contained an unsigned integer `u8`, `u16`, `u32` or `u64` that
-    /// was not expected.
-    #[cfg(feature = "128")]
     Unsigned(u128),
 
     /// The input contained a signed integer `i8`, `i16`, `i32` or `i64` that
     /// was not expected.
-    #[cfg(feature = "128")]
     Signed(i128),
 
     /// The input contained a floating point `f32` or `f64` that was not
@@ -879,7 +867,6 @@ pub trait Deserializer<'de>: Sized {
         V: Visitor<'de>;
 
     /// Hint that the `Deserialize` type is expecting an `i128` value.
-    #[cfg(feature = "128")]
     fn deserialize_i128<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>;
@@ -905,7 +892,6 @@ pub trait Deserializer<'de>: Sized {
         V: Visitor<'de>;
 
     /// Hint that the `Deserialize` type is expecting a `u128` value.
-    #[cfg(feature = "128")]
     fn deserialize_u128<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>;
@@ -1208,106 +1194,6 @@ pub trait Visitor<'de>: Sized {
         Err(Error::invalid_type(Unexpected::Bool(v), &self))
     }
 
-    /// The input contains an `i8`.
-    ///
-    /// The default implementation forwards to [`visit_i64`].
-    ///
-    /// [`visit_i64`]: #method.visit_i64
-    #[cfg(not(feature = "128"))]
-    fn visit_i8<E>(self, v: i8) -> Result<Self::Value, E>
-    where
-        E: Error,
-    {
-        self.visit_i64(v as i64)
-    }
-
-    /// The input contains an `i16`.
-    ///
-    /// The default implementation forwards to [`visit_i64`].
-    ///
-    /// [`visit_i64`]: #method.visit_i64
-    #[cfg(not(feature = "128"))]
-    fn visit_i16<E>(self, v: i16) -> Result<Self::Value, E>
-    where
-        E: Error,
-    {
-        self.visit_i64(v as i64)
-    }
-
-    /// The input contains an `i32`.
-    ///
-    /// The default implementation forwards to [`visit_i64`].
-    ///
-    /// [`visit_i64`]: #method.visit_i64
-    #[cfg(not(feature = "128"))]
-    fn visit_i32<E>(self, v: i32) -> Result<Self::Value, E>
-    where
-        E: Error,
-    {
-        self.visit_i64(v as i64)
-    }
-
-    /// The input contains an `i64`.
-    ///
-    /// The default implementation fails with a type error.
-    #[cfg(not(feature = "128"))]
-    fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E>
-    where
-        E: Error,
-    {
-        Err(Error::invalid_type(Unexpected::Signed(v), &self))
-    }
-
-    /// The input contains a `u8`.
-    ///
-    /// The default implementation forwards to [`visit_u64`].
-    ///
-    /// [`visit_u64`]: #method.visit_u64
-    #[cfg(not(feature = "128"))]
-    fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>
-    where
-        E: Error,
-    {
-        self.visit_u64(v as u64)
-    }
-
-    /// The input contains a `u16`.
-    ///
-    /// The default implementation forwards to [`visit_u64`].
-    ///
-    /// [`visit_u64`]: #method.visit_u64
-    #[cfg(not(feature = "128"))]
-    fn visit_u16<E>(self, v: u16) -> Result<Self::Value, E>
-    where
-        E: Error,
-    {
-        self.visit_u64(v as u64)
-    }
-
-    /// The input contains a `u32`.
-    ///
-    /// The default implementation forwards to [`visit_u64`].
-    ///
-    /// [`visit_u64`]: #method.visit_u64
-    #[cfg(not(feature = "128"))]
-    fn visit_u32<E>(self, v: u32) -> Result<Self::Value, E>
-    where
-        E: Error,
-    {
-        self.visit_u64(v as u64)
-    }
-
-    /// The input contains a `u64`.
-    ///
-    /// The default implementation fails with a type error.
-    #[cfg(not(feature = "128"))]
-    fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
-    where
-        E: Error,
-    {
-        Err(Error::invalid_type(Unexpected::Unsigned(v), &self))
-    }
-
     // ------------------------------
 
     /// The input contains an `i8`.
@@ -1315,7 +1201,6 @@ pub trait Visitor<'de>: Sized {
     /// The default implementation forwards to [`visit_i128`].
     ///
     /// [`visit_i128`]: #method.visit_i128
-    #[cfg(feature = "128")]
     fn visit_i8<E>(self, v: i8) -> Result<Self::Value, E>
     where
         E: Error,
@@ -1328,7 +1213,6 @@ pub trait Visitor<'de>: Sized {
     /// The default implementation forwards to [`visit_i128`].
     ///
     /// [`visit_i128`]: #method.visit_i128
-    #[cfg(feature = "128")]
     fn visit_i16<E>(self, v: i16) -> Result<Self::Value, E>
     where
         E: Error,
@@ -1341,7 +1225,6 @@ pub trait Visitor<'de>: Sized {
     /// The default implementation forwards to [`visit_i128`].
     ///
     /// [`visit_i128`]: #method.visit_i128
-    #[cfg(feature = "128")]
     fn visit_i32<E>(self, v: i32) -> Result<Self::Value, E>
     where
         E: Error,
@@ -1354,7 +1237,6 @@ pub trait Visitor<'de>: Sized {
     /// The default implementation forwards to [`visit_i128`].
     ///
     /// [`visit_i128`]: #method.visit_i128
-    #[cfg(feature = "128")]
     fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E>
     where
         E: Error,
@@ -1365,7 +1247,6 @@ pub trait Visitor<'de>: Sized {
     /// The input contains an `i128`.
     ///
     /// The default implementation fails with a type error.
-    #[cfg(feature = "128")]
     fn visit_i128<E>(self, v: i128) -> Result<Self::Value, E>
     where
         E: Error,
@@ -1378,7 +1259,6 @@ pub trait Visitor<'de>: Sized {
     /// The default implementation forwards to [`visit_u128`].
     ///
     /// [`visit_u128`]: #method.visit_u128
-    #[cfg(feature = "128")]
     fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>
     where
         E: Error,
@@ -1391,7 +1271,6 @@ pub trait Visitor<'de>: Sized {
     /// The default implementation forwards to [`visit_u128`].
     ///
     /// [`visit_u128`]: #method.visit_u128
-    #[cfg(feature = "128")]
     fn visit_u16<E>(self, v: u16) -> Result<Self::Value, E>
     where
         E: Error,
@@ -1404,7 +1283,6 @@ pub trait Visitor<'de>: Sized {
     /// The default implementation forwards to [`visit_u128`].
     ///
     /// [`visit_u128`]: #method.visit_u128
-    #[cfg(feature = "128")]
     fn visit_u32<E>(self, v: u32) -> Result<Self::Value, E>
     where
         E: Error,
@@ -1417,7 +1295,6 @@ pub trait Visitor<'de>: Sized {
     /// The default implementation forwards to [`visit_u128`].
     ///
     /// [`visit_u128`]: #method.visit_u128
-    #[cfg(feature = "128")]
     fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
     where
         E: Error,
@@ -1428,7 +1305,6 @@ pub trait Visitor<'de>: Sized {
     /// The input contains a `u128`.
     ///
     /// The default implementation fails with a type error.
-    #[cfg(feature = "128")]
     fn visit_u128<E>(self, v: u128) -> Result<Self::Value, E>
     where
         E: Error,

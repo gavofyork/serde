@@ -16,16 +16,10 @@ include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE-APACHE", "LICENSE-
 travis-ci = { repository = "serde-rs/serde" }
 appveyor = { repository = "serde-rs/serde" }
 
-[target.'cfg(feature="128")'.dependencies]
-serde_derive = { version = "1.0", optional = true, path = "../serde_derive", features = ["128"] }
-
-[target.'cfg(not(feature="128"))'.dependencies]
+[dependencies]
 serde_derive = { version = "1.0", optional = true, path = "../serde_derive" }
 
-[target.'cfg(feature="128")'.dev-dependencies]
-serde_derive = { version = "1.0", path = "../serde_derive", features = ["128"] }
-
-[target.'cfg(not(feature="128"))'.dev-dependencies]
+[dev-dependencies]
 serde_derive = { version = "1.0", path = "../serde_derive" }
 
 ### FEATURES #################################################################

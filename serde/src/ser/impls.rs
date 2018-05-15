@@ -35,14 +35,12 @@ primitive_impl!(i8, serialize_i8);
 primitive_impl!(i16, serialize_i16);
 primitive_impl!(i32, serialize_i32);
 primitive_impl!(i64, serialize_i64);
-#[cfg(feature = "128")]
 primitive_impl!(i128, serialize_i128);
 primitive_impl!(usize, serialize_u64 as u64);
 primitive_impl!(u8, serialize_u8);
 primitive_impl!(u16, serialize_u16);
 primitive_impl!(u32, serialize_u32);
 primitive_impl!(u64, serialize_u64);
-#[cfg(feature = "128")]
 primitive_impl!(u128, serialize_u128);
 primitive_impl!(f32, serialize_f32);
 primitive_impl!(f64, serialize_f64);
@@ -408,17 +406,6 @@ macro_rules! nonzero_integers {
     }
 }
 
-#[cfg(not(feature = "128"))]
-nonzero_integers! {
-    // Not including signed NonZeroI* since they might be removed
-    NonZeroU8,
-    NonZeroU16,
-    NonZeroU32,
-    NonZeroU64,
-    NonZeroUsize,
-}
-
-#[cfg(feature = "128")]
 nonzero_integers! {
     // Not including signed NonZeroI* since they might be removed
     NonZeroU8,

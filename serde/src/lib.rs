@@ -146,10 +146,8 @@ mod lib {
 
     pub use self::core::{cmp, iter, mem, ops, slice, str};
     pub use self::core::{f32, f64};
-    #[cfg(feature = "128")]
-    pub use self::core::{i128, u128};
-    pub use self::core::{i16, i32, i64, i8, isize};
-    pub use self::core::{u16, u32, u64, u8, usize};
+    pub use self::core::{i16, i32, i64, i128, i8, isize};
+    pub use self::core::{u16, u32, u64, u128, u8, usize};
 
     pub use self::core::cell::{Cell, RefCell};
     pub use self::core::clone::{self, Clone};

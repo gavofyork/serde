@@ -1969,7 +1969,6 @@ fn deserialize_identifier(
                 Ok(__Field::__other(_serde::private::de::Content::I64(__value)))
             }
 
-            #[cfg(feature = "128")]
             fn visit_i128<__E>(self, __value: i128) -> Result<Self::Value, __E>
                 where __E: _serde::de::Error
             {
@@ -2000,7 +1999,6 @@ fn deserialize_identifier(
                 Ok(__Field::__other(_serde::private::de::Content::U64(__value)))
             }
 
-            #[cfg(feature = "128")]
             fn visit_U128<__E>(self, __value: U128) -> Result<Self::Value, __E>
                 where __E: _serde::de::Error
             {

@@ -507,7 +507,6 @@ pub trait Serializer: Sized {
     /// #
     /// # fn main() {}
     /// ```
-    #[cfg(feature = "128")]
     fn serialize_i128(self, v: i128) -> Result<Self::Ok, Self::Error>;
 
     /// Serialize a `u8` value.
@@ -630,7 +629,6 @@ pub trait Serializer: Sized {
     /// #
     /// # fn main() {}
     /// ```
-    #[cfg(feature = "128")]
     fn serialize_u128(self, v: u128) -> Result<Self::Ok, Self::Error>;
 
     /// Serialize an `f32` value.

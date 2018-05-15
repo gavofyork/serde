@@ -133,14 +133,9 @@ where
     type Error = E;
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf unit unit_struct newtype_struct seq tuple tuple_struct map
         struct enum identifier ignored_any
-    }
-
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
     }
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -191,14 +186,9 @@ macro_rules! primitive_deserializer {
             type Error = E;
 
             forward_to_deserialize_any! {
-                bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+                bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
                 byte_buf option unit unit_struct newtype_struct seq tuple
                 tuple_struct map struct enum identifier ignored_any
-            }
-
-            #[cfg(feature = "128")]
-            forward_to_deserialize_any! {
-                i128 u128
             }
 
             fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -216,13 +206,11 @@ primitive_deserializer!(i8, "an `i8`.", I8Deserializer, visit_i8);
 primitive_deserializer!(i16, "an `i16`.", I16Deserializer, visit_i16);
 primitive_deserializer!(i32, "an `i32`.", I32Deserializer, visit_i32);
 primitive_deserializer!(i64, "an `i64`.", I64Deserializer, visit_i64);
-#[cfg(feature = "128")]
 primitive_deserializer!(i128, "an `i128`.", I128Deserializer, visit_i128);
 primitive_deserializer!(isize, "an `isize`.", IsizeDeserializer, visit_i64 as i64);
 primitive_deserializer!(u8, "a `u8`.", U8Deserializer, visit_u8);
 primitive_deserializer!(u16, "a `u16`.", U16Deserializer, visit_u16);
 primitive_deserializer!(u64, "a `u64`.", U64Deserializer, visit_u64);
-#[cfg(feature = "128")]
 primitive_deserializer!(u128, "a `u128`.", U128Deserializer, visit_u128);
 primitive_deserializer!(usize, "a `usize`.", UsizeDeserializer, visit_u64 as u64);
 primitive_deserializer!(f32, "an `f32`.", F32Deserializer, visit_f32);
@@ -257,14 +245,9 @@ where
     type Error = E;
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct identifier ignored_any
-    }
-
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
     }
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -355,15 +338,11 @@ where
     }
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct identifier ignored_any
     }
 
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
-    }
 }
 
 impl<'de, 'a, E> de::EnumAccess<'de> for StrDeserializer<'a, E>
@@ -429,15 +408,11 @@ where
     }
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct identifier ignored_any
     }
 
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
-    }
 }
 
 impl<'de, E> de::EnumAccess<'de> for BorrowedStrDeserializer<'de, E>
@@ -509,15 +484,11 @@ where
     }
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct identifier ignored_any
     }
 
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
-    }
 }
 
 #[cfg(any(feature = "std", feature = "alloc"))]
@@ -593,15 +564,11 @@ where
     }
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct identifier ignored_any
     }
 
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
-    }
 }
 
 #[cfg(any(feature = "std", feature = "alloc"))]
@@ -654,15 +621,11 @@ where
     }
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct identifier ignored_any enum
     }
 
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -729,15 +692,11 @@ where
     }
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct enum identifier ignored_any
     }
 
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
-    }
 }
 
 impl<'de, I, T, E> de::SeqAccess<'de> for SeqDeserializer<I, E>
@@ -849,15 +808,11 @@ where
     }
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct enum identifier ignored_any
     }
 
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -968,15 +923,11 @@ where
     }
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct tuple_struct map struct
         enum identifier ignored_any
     }
 
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
-    }
 }
 
 impl<'de, I, E> de::MapAccess<'de> for MapDeserializer<'de, I, E>
@@ -1115,15 +1066,11 @@ where
     type Error = E;
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct tuple_struct map struct
         enum identifier ignored_any
     }
 
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
-    }
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
@@ -1268,15 +1215,11 @@ where
     }
 
     forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string bytes
         byte_buf option unit unit_struct newtype_struct seq tuple tuple_struct
         map struct enum identifier ignored_any
     }
 
-    #[cfg(feature = "128")]
-    forward_to_deserialize_any! {
-        i128 u128
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

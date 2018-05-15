@@ -62,7 +62,6 @@ pub enum Token {
     /// #
     /// assert_tokens(&0i128, &[Token::I128(0)]);
     /// ```
-    #[cfg(feature = "128")]
     I128(i128),
 
     /// A serialized `u8`.
@@ -108,7 +107,6 @@ pub enum Token {
     /// #
     /// assert_tokens(&0u128, &[Token::U128(0)]);
     /// ```
-    #[cfg(feature = "128")]
     U128(u128),
 
     /// A serialized `f32`.

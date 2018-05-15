@@ -51,14 +51,9 @@ use ser::{self, Serialize, SerializeMap, SerializeSeq, SerializeStruct, Serializ
 ///
 ///     /* other Serializer methods */
 /// #     __serialize_unimplemented! {
-/// #         bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str bytes none some
+/// #         bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str bytes none some
 /// #         unit unit_struct unit_variant newtype_struct newtype_variant
 /// #         tuple tuple_struct tuple_variant map struct struct_variant
-/// #     }
-/// #
-/// #     #[cfg(feature = "128")]
-/// #     __serialize_unimplemented! {
-/// #          i128 u128
 /// #     }
 /// }
 /// #
