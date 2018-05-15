@@ -1999,7 +1999,7 @@ fn deserialize_identifier(
                 Ok(__Field::__other(_serde::private::de::Content::U64(__value)))
             }
 
-            fn visit_U128<__E>(self, __value: U128) -> Result<Self::Value, __E>
+            fn visit_u128<__E>(self, __value: u128) -> Result<Self::Value, __E>
                 where __E: _serde::de::Error
             {
                 Ok(__Field::__other(_serde::private::de::Content::U128(__value)))
